@@ -1,1 +1,3 @@
-# OpthaBot1
+# OpthaBot
+
+An optical defect detection AI

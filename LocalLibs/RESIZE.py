@@ -1,3 +1,6 @@
+##THIS IS AN EDIT OF A FILE FROM THE RESIZE LIB##
+##IT REQUIRES THE WHOLE LIB TO RUN##
+
 """main module with resize and validation functions"""
 from __future__ import division
 import math

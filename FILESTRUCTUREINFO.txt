@@ -1,0 +1,17 @@
+Each directory handles a specific part of the whole project - heres a simple breakdown of what does what
+
+In essence there are 3 basic parts of the project
+
+A - Creating the machine learning model
+B - Hosting the model 
+C - Distributing/deploying the model (basically the gui)
+
+
+DIRS
+1.ImageFormatter - this handles taking fundus images and processing them into a single constant format - in this case a 256x256 RGB Image - this involves auto-cropping images and resizing them - This is important for creating the model and will be used in deployment aswell
+2.LocalLibs - here belongs files that are from python libraries, that have had to be edited slightly for our needs - usually the rest of the library is required for the files to work
+3.DataGrabbing - Grabbing test data from a directory and returning lists of data and labels
+4.NeuralNetwork - where files related to the actual neural network will be
+5.DataPreProcessing - where images are converted into a data format that can be read by the model - also includes augumentation of files to make a bigger dataset
+
+Currently DIRS 1-5 are all being used only for model generation - although some functions will be portable to the deployment 

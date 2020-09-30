@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
 import matplotlib.pyplot as plt
-from DataStructureFormatting.DataFormatting import generateStructures
+from DataGrabbing.DataFormatting import generateStructures
 from ImageFormatting.ImageFormatter import cropImageByColorDetection
 import win32file
 import numpy as np
@@ -11,7 +11,7 @@ import gc
 #PREPARATION
 gc.collect()
 win32file._setmaxstdio(2048) #REMOVE WINDOWS RAM ACCESS LIMIT
-#print(tf.version) #CHECK TFLOW IS WORKING
+print(tf.version) #CHECK TFLOW IS WORKING
 #
 
 CLASS_NAMES = ["0","1","2","3","4","5","6","7"]
@@ -31,31 +31,41 @@ def singleTFlowImage(image): #Simply crops and prepares one image into a suitabl
 
 
 def TFlowDataFormatting(cutOff): #TENSOR FLOW DATA FORMATTER
+    print("Obtaining data")
     AllImages, AllLables = generateStructures(r"D:\FinalSet\trainingData.xlsx",r"D:\FinalSet\Compressed",cutOff)
 
-    listSlice = round(cutOff*0.9)
+    print("Splitting Data")
+    listSlice = round(cutOff*0.9) #Decides how much of our data will be reserved for testing and how much for training.
 
+    ##these just slices our whole set into our training and data sets
     trainData = AllImages[0:listSlice]
     testData = AllImages[listSlice:-1]
 
     trainLabel = AllLables[0:listSlice]
     testLabel = AllLables[listSlice:-1]
 
+    ##Will add data augumentation later
     #trainSet = DATA_GEN.flow(trainData,trainLabel,batch_size=32)  # this will augument the data - making the training data bigger than it seems
     #testSet =  DATA_GEN.flow(testData,testLabel,batch_size=32)
 
-    trainSet = [tf.keras.preprocessing.image.img_to_array(i) for i in trainData]
-    testSet= [tf.keras.preprocessing.image.img_to_array(i) for i in testData]
+    print("Converting data into matrices")
+    #Converts our images into numpy arrays
+    trainData = [tf.keras.preprocessing.image.img_to_array(i) for i in trainData]
+    testData = [tf.keras.preprocessing.image.img_to_array(i) for i in testData]
+    
+    #trainData = np.array(trainData).reshape(-1,256,256,3)
+    #testData = np.array(testData).reshape(-1,256,256,3)
+    #Converts the numpy arrays into native lists. - I will update the model to take numpy arrays or tensors at another time
+    #trainData = [nparray2list(i) for i in trainData]
+    #testData = [nparray2list(i) for i in testData]
 
-    trainSet = [nparray2list(i) for i in trainSet]
-    testSet = [nparray2list(i) for i in testSet]
     print("Done")
     #print(trainSet)
 
-    return trainSet,trainLabel,testSet,testLabel
+    return trainData,trainLabel,testData,testLabel
 
 
-def runModel(train1,train2,test1,test2):
+def runModel(train1,train2):
 
     global DATA_GEN
 
@@ -96,43 +106,17 @@ def runModel(train1,train2,test1,test2):
                   metrics=['accuracy'])
     print("Running Model - This may take a long time")
 
-    history = model.fit(train1,train2, epochs=50)
+    history = model.fit(train1,train2, epochs=100)
                         #,validation_data=(test1,test2))
     return model, history
 
 
-
-##GRAB DATA
-
-#print(tf.version)
-print("Grabbing Data")
-#trainData, trainLabel = generateStructures(r"G:\Desktop\DataSets\Useful Datasets\FinalSet\trainingData.xlsx",r"G:\Desktop\DataSets\Useful Datasets\FinalSet\Cropped",7269)
-#testData, testLabel = generateStructures(r"G:\Desktop\DataSets\Useful Datasets\FinalSet\testingData.xlsx",r"G:\Desktop\DataSets\Useful Datasets\FinalSet\Cropped",23)
-print("Data Grabbed")
-
-print("Forming Tensor Structures")
-#trainDataset = tf.data.Dataset.from_tensor_slices((trainData,trainLabel))
-#testDataset = tf.data.Dataset.from_tensor_slices((testData,testLabel))
-print("Done!")
-
-#print(trainData)
-'''
-plt.plot(history.history['accuracy'], label='accuracy')
-plt.plot(history.history['val_accuracy'], label = 'val_accuracy')
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy')
-plt.ylim([0.5, 1])
-plt.legend(loc='lower right')
-plt.show()
-
-test_loss, test_acc = model.evaluate(testData,  testLabel, verbose=2)
-
-
-print(test_acc)
-'''
-
 if __name__ == "__main__":
-    x1,x2,y1,y2 = TFlowDataFormatting(2000)
-    model, history = runModel(x1,x2,y1,y2)
+    print("STARTING")
+    print("~~GATHERING/PROCESSING DATASETS~~")
+    x1,x2,y1,y2 = TFlowDataFormatting(15)
+    print("~~STARTING NEURAL NETWORK~~")
+    model, history = runModel(x1,x2)
+    print("~~TESTING MODEL~~")
     test_loss, test_acc = model.evaluate(y1, y2, verbose=2)
     print(test_acc)

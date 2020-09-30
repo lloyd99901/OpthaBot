@@ -1,1 +1,8 @@
 venv/
+.idea/
+__pycache__/
+PractisingTensorflow/
+ImageFormatting/imageFormatting.py
+ImageFormatting/imageFormatting2.py
+ImageFormatting/imageFormatting3.py
+ImageFormatting/githubExample.py

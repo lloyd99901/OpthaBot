@@ -1,6 +1,5 @@
 ##IMAGE FORMATTING##
 
-from imageio import imread
 from PIL import Image #Python pillow image library
 import PIL.ImageOps  #Additional module from pillow
 import cv2 #OpenCV image library
@@ -8,7 +7,7 @@ import smartcrop # Image analyis library, allows intelligent cropping
 import numpy as np #NumPy lib
 import os
 #from resizeimage import resizeimage
-from RESIZE import resize_contain
+from LocalLibs.RESIZE import resize_contain
 
 ##NOTE NOT ALL OF THESE FUNCTIONS ENDED UP BEING USED - THEY ARE KEPT HERE IN CASE OF USE IN OTHER AREAS##
 def convert2Grayscale(img): #converts a cv2 image to grayscale
